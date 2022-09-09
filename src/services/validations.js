@@ -37,6 +37,21 @@ const joiCategory = joi.object({
   }),
 });
 
+const joiPost = joi.object({
+  title: joi.string().required().messages({
+    'string.empty': '400|Some required fields are missing',
+    'any.required': '400|Some required fields are missing',
+  }),
+  content: joi.string().required().messages({
+    'string.empty': '400|Some required fields are missing',
+    'any.required': '400|Some required fields are missing',
+  }),
+  categoryIds: joi.array().required().messages({
+    'string.empty': '400|Some required fields are missing',
+    'any.required': '400|Some required fields are missing',
+  }),
+});
+
 const checkValidations = (check, object) => {
   const { error } = check.validate(object);
   if (error !== undefined) {
@@ -50,9 +65,11 @@ const checkValidations = (check, object) => {
 const checkLogin = (object) => checkValidations(joiLogin, object);
 const checkCreate = (object) => checkValidations(joiCreate, object);
 const checkCategory = (object) => checkValidations(joiCategory, object);
+const checkPost = (object) => checkValidations(joiPost, object);
 
 module.exports = {
   checkLogin,
   checkCreate,
   checkCategory,
+  checkPost,
 };

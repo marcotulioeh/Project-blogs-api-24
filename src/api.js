@@ -1,6 +1,10 @@
 const express = require('express');
-const { userController, categoryController } = require('./controllers');
 const middleware = require('./middleware');
+const {
+  userController,
+  categoryController,
+  postController,
+} = require('./controllers');
 
 // ...
 
@@ -19,6 +23,8 @@ app.get('/user/:id', middleware.authentication, userController.findById);
 app.post('/categories', middleware.authentication, categoryController.create);
 
 app.get('/categories', middleware.authentication, categoryController.getAll);
+
+app.post('/post', middleware.authentication, postController.create);
 
 // ...
 
