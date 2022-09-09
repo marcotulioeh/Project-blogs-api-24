@@ -30,6 +30,13 @@ const joiCreate = joi.object({
   }),
 });
 
+const joiCategory = joi.object({
+  name: joi.string().required().messages({
+    'string.empty': '400|"name" is required',
+    'any.required': '400|"name" is required',
+  }),
+});
+
 const checkValidations = (check, object) => {
   const { error } = check.validate(object);
   if (error !== undefined) {
@@ -42,8 +49,10 @@ const checkValidations = (check, object) => {
 
 const checkLogin = (object) => checkValidations(joiLogin, object);
 const checkCreate = (object) => checkValidations(joiCreate, object);
+const checkCategory = (object) => checkValidations(joiCategory, object);
 
 module.exports = {
   checkLogin,
   checkCreate,
+  checkCategory,
 };
