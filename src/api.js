@@ -14,6 +14,8 @@ app.post('/user', userController.create);
 
 app.get('/user', middleware.authentication, userController.getAll);
 
+app.get('/user/:id', middleware.authentication, userController.findById);
+
 // ...
 
 app.use(middleware.error);
