@@ -1,4 +1,4 @@
-const { BlogPost, Category, PostCategory, sequelize } = require('../database/models');
+const { BlogPost, Category, PostCategory, sequelize, User } = require('../database/models');
 const { checkPost } = require('./validations');
 
 module.exports = {
@@ -27,5 +27,25 @@ module.exports = {
     });
 
     return { data, code, message };
+  },
+
+  getAll: async () => {
+    const posts = await BlogPost.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: { exclude: ['password'] },
+        },
+        {
+          model: Category,
+          as: 'categories',
+        },
+      ],
+    });
+
+    if (!posts) return { code: 404, message: 'Posts not found' };
+
+    return { code: 200, data: posts };
   },
 };

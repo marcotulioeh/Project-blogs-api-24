@@ -13,4 +13,12 @@ module.exports = {
 
     return res.status(code).json(data);
   }),
+
+  getAll: rescue(async (_req, res, next) => {
+    const { data, code, message } = await postService.getAll();
+
+    if (message) return next({ code, message });
+
+    return res.status(code).json(data);
+  }),
 };
