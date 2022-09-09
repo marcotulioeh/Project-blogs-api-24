@@ -1,6 +1,6 @@
 const joi = require('joi');
 
-const loginJoi = joi.object({
+const joiLogin = joi.object({
   email: joi.string().email().required().messages({
     'string.empty': '400|Some required fields are missing',
     'any.required': '400|Some required fields are missing',
@@ -13,8 +13,7 @@ const loginJoi = joi.object({
 });
 
 const checkLogin = (object) => {
-  const { error } = loginJoi.validate(object);
-
+  const { error } = joiLogin.validate(object);
   if (error !== undefined) {
     const [code, message] = error.message.split('|');
     return { code: Number(code), message };
