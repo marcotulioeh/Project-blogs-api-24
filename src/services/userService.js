@@ -13,7 +13,7 @@ module.exports = {
 
     const token = generateToken(email);
 
-    return { token };
+    return { code: 200, data: token };
   },
 
   create: async ({ displayName, email, password, image }) => {
@@ -26,6 +26,13 @@ module.exports = {
     await User.create({ displayName, email, password, image });
     const token = generateToken(email);
 
-    return { token };
+    return { code: 201, data: token };
+  },
+
+  getAll: async () => {
+    const users = await User.findAll({ attributes: { exclude: ['password'] } });
+
+    if (!users) return { code: 404, message: 'Users not found' };
+    return { code: 200, data: users };
   },
 };
