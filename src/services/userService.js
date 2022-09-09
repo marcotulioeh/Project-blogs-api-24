@@ -1,6 +1,6 @@
 const { User } = require('../database/models');
 const generateToken = require('./generateToken');
-const { checkLogin } = require('./validations');
+const { checkLogin, checkCreate } = require('./validations');
 
 module.exports = {
   login: async ({ email, password }) => {
@@ -12,6 +12,20 @@ module.exports = {
     if (user.dataValues.password !== password) return { code: 400, message: 'Invalid fields' };
 
     const token = generateToken(email);
+
+    return { token };
+  },
+
+  create: async ({ displayName, email, password, image }) => {
+    const validation = checkCreate({ displayName, email, password });
+    if (validation.code) return validation;
+
+    const user = await User.findOne({ where: { email } });
+    if (user) return { code: 409, message: 'User already registered' };
+
+    await User.create({ displayName, email, password, image });
+    const token = generateToken(email);
+
     return { token };
   },
 };
