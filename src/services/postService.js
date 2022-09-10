@@ -7,8 +7,8 @@ module.exports = {
     if (validation.code) return validation;
 
     const { data, code, message } = await sequelize.transaction(async (transaction) => {
-      const { rows } = await Category.findAndCountAll({ where: { id: categoryIds } });
-      if (rows.length < categoryIds.length) {
+      const { count } = await Category.findAndCountAll({ where: { id: categoryIds } });
+      if (count < categoryIds.length) {
         return { code: 400, message: '"categoryIds" not found' };
       }
 
@@ -47,5 +47,25 @@ module.exports = {
     if (!posts) return { code: 404, message: 'Posts not found' };
 
     return { code: 200, data: posts };
+  },
+
+  findById: async (id) => {
+    const post = await BlogPost.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: { exclude: ['password'] },
+        },
+        {
+          model: Category,
+          as: 'categories',
+        },
+      ],
+    });
+
+    if (!post) return { code: 404, message: 'Post does not exist' };
+
+    return { code: 200, data: post };
   },
 };
