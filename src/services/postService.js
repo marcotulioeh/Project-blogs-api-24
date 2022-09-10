@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { BlogPost, Category, PostCategory, sequelize, User } = require('../database/models');
 const { checkPost, checkUpdate, checkUser } = require('./validations');
 
@@ -96,5 +97,25 @@ module.exports = {
     await BlogPost.destroy({ where: { id } });
 
     return { code: 204 };
+  },
+
+  search: async (search) => {
+    const posts = await BlogPost.findAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.like]: `%${search}%` } },
+          { content: { [Op.like]: `%${search}%` } },
+        ],
+      },
+      include: 
+      [
+        { model: User, as: 'user', attributes: { exclude: ['password'] } },
+        { model: Category, as: 'categories', through: { attributes: [] } },
+      ],
+    });
+
+    if (!posts) return { code: 404, message: 'AQUI' };
+
+    return { code: 200, data: posts };
   },
 };

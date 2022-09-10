@@ -20,6 +20,8 @@ app.get('/user', middleware.authentication, userController.getAll);
 
 app.get('/user/:id', middleware.authentication, userController.findById);
 
+app.delete('/user/:id', middleware.authentication, userController.delete);
+
 app.post('/categories', middleware.authentication, categoryController.create);
 
 app.get('/categories', middleware.authentication, categoryController.getAll);
@@ -27,6 +29,8 @@ app.get('/categories', middleware.authentication, categoryController.getAll);
 app.post('/post', middleware.authentication, postController.create);
 
 app.get('/post', middleware.authentication, postController.getAll);
+
+app.get('/post/search', middleware.authentication, postController.search);
 
 app.get('/post/:id', middleware.authentication, postController.findById);
 
