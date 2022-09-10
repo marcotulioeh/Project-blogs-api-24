@@ -1,5 +1,5 @@
 const { BlogPost, Category, PostCategory, sequelize, User } = require('../database/models');
-const { checkPost } = require('./validations');
+const { checkPost, checkUpdate, checkUser } = require('./validations');
 
 module.exports = {
   create: async (userId, { title, content, categoryIds }) => {
@@ -40,6 +40,7 @@ module.exports = {
         {
           model: Category,
           as: 'categories',
+          through: { attributes: [] },
         },
       ],
     });
@@ -60,6 +61,7 @@ module.exports = {
         {
           model: Category,
           as: 'categories',
+          through: { attributes: [] },
         },
       ],
     });
@@ -67,5 +69,32 @@ module.exports = {
     if (!post) return { code: 404, message: 'Post does not exist' };
 
     return { code: 200, data: post };
+  },
+
+  update: async (id, userId, { title, content }) => {
+    const validation = checkUpdate({ title, content });
+    if (validation.code) return validation;
+
+    const validationUser = await checkUser(id, userId);
+    if (validationUser.code) return validationUser;
+
+    await BlogPost.update({ title, content }, { where: { id } });
+    const { dataValues } = await BlogPost.findByPk(id, { include: 
+      [
+        { model: User, as: 'user', attributes: { exclude: ['password'] } },
+        { model: Category, as: 'categories', through: { attributes: [] } },
+      ],
+    });
+
+    return { code: 200, data: dataValues };
+  },
+
+  delete: async (id, userId) => {
+    const validationUser = await checkUser(id, userId);
+    if (validationUser.code) return validationUser;
+
+    await BlogPost.destroy({ where: { id } });
+
+    return { code: 204 };
   },
 };

@@ -30,6 +30,10 @@ app.get('/post', middleware.authentication, postController.getAll);
 
 app.get('/post/:id', middleware.authentication, postController.findById);
 
+app.put('/post/:id', middleware.authentication, postController.update);
+
+app.delete('/post/:id', middleware.authentication, postController.delete);
+
 // ...
 
 app.use(middleware.error);
